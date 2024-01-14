@@ -8,5 +8,5 @@ langchain_experimental
 mysql-connector-python
 pymysql
 sentence-transformers
-chromadb
+chromadb==0.4.15
 google-generativeai

@@ -1,23 +1,18 @@
-from langchain.llms import GooglePalm
-from dotenv import dotenv_values
-from langchain.utilities import SQLDatabase
-from langchain_experimental.sql import SQLDatabaseChain
+import streamlit as st
+from langchain_helper import get_few_shot_db_chain
 
-def main():
-    config = dotenv_values(".env")
-    llm = GooglePalm(google_api_key=config["PALM_API_KEY"], temperature=0.2)
+st.title("AtliQ T Shirts: Database Q&A 👕")
 
-    db_user = config["DB_USER"]
-    db_password = config["DB_PASS"]
-    db_host = config["DB_HOST"]
-    db_name = config["DB_NAME"]
+question = st.text_input("Question: ")
 
-    db = SQLDatabase.from_uri(f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}",sample_rows_in_table_info=3)
+if question:
+    chain = get_few_shot_db_chain()
+    response = chain.run(question)
 
-    db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
-    # qns1 = db_chain("How many t-shirts do we have left for nike in extra small size and white color?")
-    qns3 = db_chain.run("If we have to sell all the Levi’s T-shirts today with discounts applied. How much revenue our store will generate (post discounts)?")
+    st.header("Answer")
+    st.write(response)
 
-    
-if __name__ == "__main__":
-    main()
+
+
+
+
